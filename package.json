@@ -1,0 +1,45 @@
+{
+  "name": "d3-example",
+  "private": true,
+  "license": "MIT",
+  "author": {
+    "name": "Zach Orlovsky",
+    "email": "sadorlovsky@gmail.com",
+    "url": "https://orlovsky.dev"
+  },
+  "scripts": {
+    "lint": "eslint source/**/*.ts",
+    "dev": "parcel source/index.html",
+    "build": "del dist && parcel build source/index.html"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "pre-push": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.ts": "eslint --fix"
+  },
+  "dependencies": {
+    "@primer/octicons": "^9.3.1",
+    "color-hash": "^1.0.3",
+    "d3": "^5.15.0"
+  },
+  "devDependencies": {
+    "@types/d3": "^5.7.2",
+    "@typescript-eslint/eslint-plugin": "^2.18.0",
+    "@typescript-eslint/parser": "^2.18.0",
+    "del-cli": "^3.0.0",
+    "eslint": "^6.8.0",
+    "eslint-config-standard": "^14.1.0",
+    "eslint-plugin-import": "^2.20.0",
+    "eslint-plugin-node": "^11.0.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1",
+    "husky": "^4.2.1",
+    "lint-staged": "^10.0.3",
+    "parcel": "^2.0.0-alpha.3.2",
+    "typescript": "^3.7.5"
+  }
+}
