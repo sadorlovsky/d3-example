@@ -59,7 +59,7 @@ const onZoom = (): void => {
   }
 }
 
-const zoom = d3
+const zoom: any = d3
   .zoom()
   .scaleExtent([0.1, 10])
   .on('zoom', onZoom)
@@ -79,6 +79,19 @@ const onScroll = (): void => {
     // Update zoom parameters based on scrollbar positions.
     wrapper.call(zoom.translateTo, x / scale, y / scale)
   }
+}
+
+const getLinkPath: any = (d: Circle, index: number, nodes: any[]): string | null => {
+  if (index <= nodes.length - 2) {
+    const sourceX = d.x
+    const sourceY = d.y
+
+    const targetX = nodes[index + 1].__data__.x
+    const targetY = nodes[index + 1].__data__.y
+
+    return `M${sourceX} ${sourceY} L${targetX} ${targetY}`
+  }
+  return null
 }
 
 const draw = (): void => {
@@ -103,18 +116,7 @@ const draw = (): void => {
   g.append('path')
     .classed('link', true)
     .attr('stroke', d => colorHash.hex(d.id))
-    .attr('d', (d, index, nodes) => {
-      if (index <= nodes.length - 2) {
-        const sourceX = d.x
-        const sourceY = d.y
-
-        const targetX = nodes[index + 1].__data__.x
-        const targetY = nodes[index + 1].__data__.y
-
-        return `M${sourceX} ${sourceY} L${targetX} ${targetY}`
-      }
-      return null
-    })
+    .attr('d', getLinkPath)
 
   g.append('text')
     .classed('label', true)
