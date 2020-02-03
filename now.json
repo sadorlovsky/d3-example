@@ -1,0 +1,5 @@
+{
+  "builds": [
+    { "src": "source/index.html", "use": "now-parcel" }
+  ]
+}
