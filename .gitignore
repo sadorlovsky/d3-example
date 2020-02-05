@@ -3,3 +3,5 @@ node_modules
 yarn-*.log
 dist
 .vscode
+.cache
+public
