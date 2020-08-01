@@ -22,7 +22,7 @@ type Circle = {
   y: number;
 };
 
-const circleData = ({ width, height }: Tree): Circle[] =>
+const getCircleData = ({ width, height }: Tree): Circle[] =>
   d3.range(NODE_COUNT).map(index => ({
     id: index,
     x: Math.round(Math.random() * (width - CIRCLE_RADIUS * 2) + CIRCLE_RADIUS),
@@ -45,9 +45,10 @@ const onZoom = (): void => {
   // Scale the tree itself
   svg.select('g').attr('transform', `scale(${scale})`)
 
-  // Move scrollbars
   const wrapperNode = wrapper.node() as HTMLDivElement
+
   if (wrapperNode) {
+    // Move scrollbars
     wrapperNode.scrollLeft = -event.transform.x
     wrapperNode.scrollTop = -event.transform.y
 
@@ -101,10 +102,12 @@ const draw = (): void => {
   svg.attr('width', CANVAS_WIDTH)
   svg.attr('height', CANVAS_HEIGHT)
 
+  const data = getCircleData({ width: CANVAS_WIDTH, height: CANVAS_HEIGHT })
+
   const svgGroup = svg
     .append('g')
     .selectAll('circle')
-    .data(circleData({ width: CANVAS_WIDTH, height: CANVAS_HEIGHT }))
+    .data(data)
     .enter()
 
   const nodeGroup = svgGroup.append('g')
@@ -152,6 +155,7 @@ const draw = (): void => {
   wrapper
     .on('scroll', onScroll)
     .call(zoom)
+    .call(zoom.transform, d3.zoomIdentity.scale(0.7))
 }
 
 draw()
