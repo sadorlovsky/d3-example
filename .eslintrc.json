@@ -19,7 +19,7 @@
     "@typescript-eslint"
   ],
   "ignorePatterns": [
-    "dist/",
+    "public/",
     "node_modules/"
   ],
   "rules": {}
