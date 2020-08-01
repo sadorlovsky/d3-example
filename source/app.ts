@@ -6,12 +6,12 @@ import ColorHash from 'color-hash'
 const d3 = { select, event, max, range, zoom: d3zoom, zoomTransform, zoomIdentity }
 const colorHash = new ColorHash()
 
-const RADIUS = 25
-const COUNT = 50
-const WIDTH = 3000
-const HEIGHT = 3000
+const CIRCLE_RADIUS = 25
+const NODE_COUNT = 50
+const CANVAS_WIDTH = 3000
+const CANVAS_HEIGHT = 3000
 
-type TreeSize = {
+type Tree = {
   width: number;
   height: number;
 };
@@ -22,11 +22,11 @@ type Circle = {
   y: number;
 };
 
-const circleData = ({ width, height }: TreeSize): Circle[] =>
-  d3.range(COUNT).map(index => ({
+const circleData = ({ width, height }: Tree): Circle[] =>
+  d3.range(NODE_COUNT).map(index => ({
     id: index,
-    x: Math.round(Math.random() * (width - RADIUS * 2) + RADIUS),
-    y: Math.round(Math.random() * (height - RADIUS * 2) + RADIUS)
+    x: Math.round(Math.random() * (width - CIRCLE_RADIUS * 2) + CIRCLE_RADIUS),
+    y: Math.round(Math.random() * (height - CIRCLE_RADIUS * 2) + CIRCLE_RADIUS)
   }))
 
 const onZoom = (): void => {
@@ -35,8 +35,8 @@ const onZoom = (): void => {
 
   const scale: number = event.transform.k
 
-  const scaledWidth = WIDTH * scale
-  const scaledHeight = HEIGHT * scale
+  const scaledWidth = CANVAS_WIDTH * scale
+  const scaledHeight = CANVAS_HEIGHT * scale
 
   // Change SVG dimensions
   svg.attr('width', scaledWidth)
@@ -98,20 +98,20 @@ const draw = (): void => {
   const wrapper = d3.select('.wrapper')
   const svg = d3.select('svg')
 
-  svg.attr('width', WIDTH)
-  svg.attr('height', HEIGHT)
+  svg.attr('width', CANVAS_WIDTH)
+  svg.attr('height', CANVAS_HEIGHT)
 
   const g = svg
     .append('g')
     .selectAll('circle')
-    .data(circleData({ width: WIDTH, height: HEIGHT }))
+    .data(circleData({ width: CANVAS_WIDTH, height: CANVAS_HEIGHT }))
     .enter()
 
   g.append('circle')
     .classed('circle', true)
     .attr('cx', d => d.x)
     .attr('cy', d => d.y)
-    .attr('r', RADIUS)
+    .attr('r', CIRCLE_RADIUS)
 
   g.append('path')
     .classed('link', true)
@@ -121,7 +121,7 @@ const draw = (): void => {
   g.append('text')
     .classed('label', true)
     .attr('x', d => d.x)
-    .attr('y', d => d.y + RADIUS / 4)
+    .attr('y', d => d.y + CIRCLE_RADIUS / 4)
     .on('mousedown', function () {
       event.stopPropagation()
     })
