@@ -101,24 +101,26 @@ const draw = (): void => {
   svg.attr('width', CANVAS_WIDTH)
   svg.attr('height', CANVAS_HEIGHT)
 
-  const g = svg
+  const svgGroup = svg
     .append('g')
     .selectAll('circle')
     .data(circleData({ width: CANVAS_WIDTH, height: CANVAS_HEIGHT }))
     .enter()
 
-  g.append('circle')
+  const nodeGroup = svgGroup.append('g')
+
+  nodeGroup.append('circle')
     .classed('circle', true)
     .attr('cx', d => d.x)
     .attr('cy', d => d.y)
     .attr('r', CIRCLE_RADIUS)
 
-  g.append('path')
+  nodeGroup.append('path')
     .classed('link', true)
     .attr('stroke', d => colorHash.hex(d.id))
     .attr('d', getLinkPath)
 
-  g.append('text')
+  nodeGroup.append('text')
     .classed('label', true)
     .attr('x', d => d.x)
     .attr('y', d => d.y + CIRCLE_RADIUS / 4)
@@ -126,6 +128,26 @@ const draw = (): void => {
       event.stopPropagation()
     })
     .text(d => d.id + 1)
+
+  nodeGroup
+    .on('mouseover', (_, index, nodes) => {
+      const node = nodes[index]
+      d3
+        .select(node)
+        .select('circle')
+        .transition()
+        .duration(100)
+        .attr('r', CIRCLE_RADIUS * 1.1)
+    })
+    .on('mouseout', (_, index, nodes) => {
+      const node = nodes[index]
+      d3
+        .select(node)
+        .select('circle')
+        .transition()
+        .duration(100)
+        .attr('r', CIRCLE_RADIUS)
+    })
 
   wrapper
     .on('scroll', onScroll)
