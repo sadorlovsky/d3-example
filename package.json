@@ -9,8 +9,8 @@
   },
   "scripts": {
     "lint": "eslint source/**/*.ts",
-    "dev": "parcel source/index.html",
-    "build": "parcel build source/index.html -d public"
+    "dev": "parcel serve source/index.html",
+    "build": "parcel build source/index.html --dist-dir public"
   },
   "husky": {
     "hooks": {
@@ -39,7 +39,7 @@
     "eslint-plugin-standard": "^4.0.1",
     "husky": "^4.2.1",
     "lint-staged": "^10.0.3",
-    "parcel": "^1.12.4",
+    "parcel": "2.0.0-beta.1",
     "typescript": "^3.7.5"
   }
 }
