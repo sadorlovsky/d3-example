@@ -1,9 +1,9 @@
 import { select, event } from 'd3-selection'
 import { max, range } from 'd3-array'
-import { zoom as d3zoom, zoomTransform, zoomIdentity } from 'd3-zoom'
+import { zoom, zoomTransform, zoomIdentity } from 'd3-zoom'
 import ColorHash from 'color-hash'
 
-const d3 = { select, event, max, range, zoom: d3zoom, zoomTransform, zoomIdentity }
+// const d3 = { select, event, max, range, zoom: d3zoom, zoomTransform, zoomIdentity }
 const colorHash = new ColorHash()
 
 const CIRCLE_RADIUS = 25
@@ -23,15 +23,15 @@ type Circle = {
 };
 
 const getCircleData = ({ width, height }: Tree): Circle[] =>
-  d3.range(NODE_COUNT).map(index => ({
+  range(NODE_COUNT).map(index => ({
     id: index,
     x: Math.round(Math.random() * (width - CIRCLE_RADIUS * 2) + CIRCLE_RADIUS),
     y: Math.round(Math.random() * (height - CIRCLE_RADIUS * 2) + CIRCLE_RADIUS)
   }))
 
 const onZoom = (): void => {
-  const svg = d3.select<SVGElement, {}>('svg')
-  const wrapper = d3.select<HTMLDivElement, {}>('.wrapper')
+  const svg = select<SVGElement, {}>('svg')
+  const wrapper = select<HTMLDivElement, {}>('.wrapper')
 
   const scale: number = event.transform.k
 
@@ -45,7 +45,7 @@ const onZoom = (): void => {
   // Scale the tree itself
   svg.select('g').attr('transform', `scale(${scale})`)
 
-  const wrapperNode = wrapper.node() as HTMLDivElement
+  const wrapperNode = wrapper.node()
 
   if (wrapperNode) {
     // Move scrollbars
@@ -54,14 +54,13 @@ const onZoom = (): void => {
 
     // If the tree is smaller than the wrapper, move the tree towards the
     // center of the wrapper.
-    const dx = d3.max([0, wrapperNode.clientWidth / 2 - scaledWidth / 2])
-    const dy = d3.max([0, wrapperNode.clientHeight / 2 - scaledHeight / 2])
+    const dx = max([0, wrapperNode.clientWidth / 2 - scaledWidth / 2])
+    const dy = max([0, wrapperNode.clientHeight / 2 - scaledHeight / 2])
     svg.attr('transform', `translate(${dx}, ${dy})`)
   }
 }
 
-const zoom: any = d3
-  .zoom()
+const zoomBehavior = zoom<HTMLDivElement, {}>()
   .scaleExtent([0.1, 10])
   .on('zoom', onZoom)
   .filter(() => {
@@ -69,16 +68,16 @@ const zoom: any = d3
   })
 
 const onScroll = (): void => {
-  const wrapper = d3.select<HTMLDivElement, {}>('.wrapper')
-  const wrapperNode = wrapper.node() as HTMLDivElement
+  const wrapper = select<HTMLDivElement, {}>('.wrapper')
+  const wrapperNode = wrapper.node()
 
   if (wrapperNode) {
     const x = wrapperNode.scrollLeft + wrapperNode.clientWidth / 2
     const y = wrapperNode.scrollTop + wrapperNode.clientHeight / 2
-    const scale = d3.zoomTransform(wrapperNode).k
+    const scale = zoomTransform(wrapperNode).k
 
     // Update zoom parameters based on scrollbar positions.
-    wrapper.call(zoom.translateTo, x / scale, y / scale)
+    wrapper.call(zoomBehavior.translateTo, x / scale, y / scale)
   }
 }
 
@@ -96,8 +95,8 @@ const getLinkPath: any = (d: Circle, index: number, nodes: any[]): string | null
 }
 
 const draw = (): void => {
-  const wrapper = d3.select('.wrapper')
-  const svg = d3.select('svg')
+  const wrapper = select<HTMLDivElement, {}>('.wrapper')
+  const svg = select<SVGSVGElement, null>('svg')
 
   svg.attr('width', CANVAS_WIDTH)
   svg.attr('height', CANVAS_HEIGHT)
@@ -135,8 +134,7 @@ const draw = (): void => {
   nodeGroup
     .on('mouseover', (_, index, nodes) => {
       const node = nodes[index]
-      d3
-        .select(node)
+      select(node)
         .select('circle')
         .transition()
         .duration(100)
@@ -144,8 +142,7 @@ const draw = (): void => {
     })
     .on('mouseout', (_, index, nodes) => {
       const node = nodes[index]
-      d3
-        .select(node)
+      select(node)
         .select('circle')
         .transition()
         .duration(100)
@@ -154,8 +151,8 @@ const draw = (): void => {
 
   wrapper
     .on('scroll', onScroll)
-    .call(zoom)
-    .call(zoom.transform, d3.zoomIdentity.scale(0.7))
+    .call(zoomBehavior)
+    .call(zoomBehavior.transform, zoomIdentity.scale(0.7))
 }
 
 draw()
