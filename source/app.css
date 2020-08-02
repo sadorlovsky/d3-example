@@ -24,6 +24,11 @@ body {
   overflow: scroll;
 }
 
+.wrapper > svg {
+  display: block;
+  margin: auto;
+}
+
 .circle {
   fill: #484D6D;
 }

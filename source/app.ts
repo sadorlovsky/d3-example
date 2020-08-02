@@ -3,13 +3,13 @@ import { max, range } from 'd3-array'
 import { zoom, zoomTransform, zoomIdentity } from 'd3-zoom'
 import ColorHash from 'color-hash'
 
-// const d3 = { select, event, max, range, zoom: d3zoom, zoomTransform, zoomIdentity }
-const colorHash = new ColorHash()
-
 const CIRCLE_RADIUS = 25
 const NODE_COUNT = 50
 const CANVAS_WIDTH = 3000
 const CANVAS_HEIGHT = 3000
+const INITIAL_SCALE = 0.7
+
+const colorHash = new ColorHash()
 
 type Tree = {
   width: number;
@@ -152,7 +152,7 @@ const draw = (): void => {
   wrapper
     .on('scroll', onScroll)
     .call(zoomBehavior)
-    .call(zoomBehavior.transform, zoomIdentity.scale(0.7))
+    .call(zoomBehavior.transform, zoomIdentity.scale(INITIAL_SCALE))
 }
 
 draw()
